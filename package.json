@@ -1,0 +1,20 @@
+{
+  "name": "@eduzz/eslint-config",
+  "private": false,
+  "version": "0.0.1",
+  "description": "Eduzz Eslint Config",
+  "author": "Eduzz Team",
+  "license": "MIT",
+  "homepage": "https://github.com/eduzz/eslint-config",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eduzz/eslint-config"
+  },
+  "bugs": {
+    "url": "https://github.com/eduzz/eslint-config/issues"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "peerDependencies": {}
+}
