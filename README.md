@@ -4,7 +4,7 @@ Configuração padrão do eslint para os projetos da Eduzz.
 
 ## Migração
 
-Se está migrando do `@eduzz/eslint-config-houston` altere as configurações do .eslintrc para:
+Se está migrando do `@eduzz/eslint-config-houston` altere as configurações do `.eslintrc [extends]` para:
 
 * `@eduzz/eslint-config-houston` >> `@eduzz/eslint-config/react`
 * `@eduzz/eslint-config-houston/native` >> `@eduzz/eslint-config/react-native`
