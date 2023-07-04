@@ -1,24 +1,23 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
 const childProccess = require('child_process');
 
 const globalPackages = childProccess.execSync('npm root -g').toString().trim();
 const semver = require(`${globalPackages}/semver`);
 
-const package = require('../package.json');
+const packageJson = require('../package.json');
 
 async function init() {
-  if (!semver.valid(package.version)) {
-    throw new Error(`Invalid Version: ${package.version}`);
+  if (!semver.valid(packageJson.version)) {
+    throw new Error(`Invalid Version: ${packageJson.version}`);
   }
 
-  console.log('NEW VERSION:' + package.version);
+  console.log('NEW VERSION:' + packageJson.version);
 
-  const remoteVersion = await exec(`npm view ${package.name} version`);
-  package.remoteVersion = remoteVersion;
+  const remoteVersion = await exec(`npm view ${packageJson.name} version`);
+  packageJson.remoteVersion = remoteVersion;
 
-  console.log(`REMOTE VERSIONS: ${package.remoteVersion}`);
+  console.log(`REMOTE VERSIONS: ${packageJson.remoteVersion}`);
 
-  const isGreater = semver.gt(package.version, package.remoteVersion);
+  const isGreater = semver.gt(packageJson.version, packageJson.remoteVersion);
 
   if (!isGreater) {
     console.log('Version already published, skipping...');
@@ -33,7 +32,7 @@ function exec(command, live) {
   return new Promise((resolve, reject) => {
     const cmd = childProccess.exec(command, { env: { ...process.env } }, (err, stdout) => {
       if (err) reject(err);
-      resolve(stdout?.trim());
+      resolve(stdout.trim());
     });
 
     if (!live) return;
@@ -43,7 +42,7 @@ function exec(command, live) {
 
 init()
   .then(() => {
-    console.log(`NEW VERSION CAN BE PUBLISHED: ${package.version}`);
+    console.log(`NEW VERSION CAN BE PUBLISHED: ${packageJson.version}`);
     process.exit(0);
   })
   .catch(err => {

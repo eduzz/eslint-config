@@ -10,14 +10,21 @@ module.exports = {
         format: ['camelCase', 'UPPER_CASE', 'PascalCase'],
         leadingUnderscore: 'allowSingleOrDouble'
       },
-      { selector: 'parameter', format: ['camelCase', 'PascalCase'], leadingUnderscore: 'allow' },
+      {
+        selector: 'parameter',
+        format: ['camelCase', 'PascalCase'],
+        leadingUnderscore: 'allow'
+      },
       {
         selector: 'memberLike',
         modifiers: ['private'],
         format: ['camelCase'],
         leadingUnderscore: 'allowSingleOrDouble'
       },
-      { selector: 'typeLike', format: ['camelCase', 'PascalCase'] }
+      {
+        selector: 'typeLike',
+        format: ['camelCase', 'PascalCase']
+      }
     ],
     '@typescript-eslint/member-ordering': ['error'],
     '@typescript-eslint/no-namespace': ['error'],

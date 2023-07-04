@@ -3,11 +3,7 @@ module.exports = {
     'import/internal-regex': '(^@eduzz|react|^@nestjs|^~)'
   },
   plugins: ['prettier', 'eslint-plugin-unused-imports'],
-  extends: [
-    'plugin:prettier/recommended',
-    'plugin:import/recommended',
-    'plugin:import/typescript'
-  ],
+  extends: ['plugin:prettier/recommended', 'plugin:import/recommended', 'plugin:import/typescript'],
   parserOptions: {
     ecmaVersion: 10,
     sourceType: 'module',

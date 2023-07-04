@@ -1,3 +1,4 @@
 module.exports = {
-  extends: ['./configs/default', './configs/typescript', './configs/react']
+  extends: ['./configs/default', './configs/typescript'],
+  env: { node: true }
 };
