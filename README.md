@@ -1,7 +1,6 @@
 # ESLint Config
 
-Para configurar no padrão da Eduzz, primerio você deve adicionar as dependências, pois o eslint exige que plugins devem,
-ser adicionados no projeto principal:
+Configuração padrão do eslint para os projetos da Eduzz.
 
 ## Migração
 
@@ -11,7 +10,12 @@ Se está migrando do `@eduzz/eslint-config-houston` altere as configurações do
 * `@eduzz/eslint-config-houston/native` >> `@eduzz/eslint-config/react-native`
 * `@eduzz/eslint-config-houston/node` >> `@eduzz/eslint-config`
 
-## Javascript / Typescript / Node
+## Instalação
+
+Para configurar no padrão da Eduzz, primerio você deve adicionar as dependências, pois o eslint exige que plugins devem,
+ser adicionados no projeto principal
+
+### Javascript / Typescript / Node
 
 ```sh
 yarn add --dev @eduzz/eslint-config eslint @typescript-eslint/eslint-plugin @typescript-eslint/parser eslint-config-prettier eslint-plugin-eslint-plugin eslint-plugin-import eslint-plugin-prettier eslint-plugin-unused-imports prettier
@@ -29,7 +33,7 @@ module.exports = {
 };
 ```
 
-## React
+### React
 
 ```sh
 yarn add --dev @eduzz/eslint-config eslint @typescript-eslint/eslint-plugin @typescript-eslint/parser eslint-config-prettier eslint-plugin-eslint-plugin eslint-plugin-import eslint-plugin-prettier eslint-plugin-react eslint-plugin-react-hooks eslint-plugin-unused-imports prettier
@@ -47,7 +51,7 @@ module.exports = {
 };
 ```
 
-## React Native:
+### React Native
 
 ```sh
 yarn add --dev @eduzz/eslint-config eslint eslint-plugin-react-native @typescript-eslint/eslint-plugin @typescript-eslint/parser eslint-config-prettier eslint-plugin-eslint-plugin eslint-plugin-import eslint-plugin-prettier eslint-plugin-react eslint-plugin-react-hooks eslint-plugin-unused-imports prettier
