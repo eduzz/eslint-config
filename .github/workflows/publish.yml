@@ -1,0 +1,77 @@
+name: Publish
+
+on:
+  push:
+    branches:
+      - master
+
+concurrency: 
+  group: publish-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  should-release:
+    name: Should Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone
+        uses: actions/checkout@v3
+      - name: Node
+        uses: actions/setup-node@v3
+      - name: Deps
+        run: npm i -g semver
+      - name: Run should-release
+        run: node ./scripts/should-release.js
+      - name: Current Version
+        id: current-version
+        run: echo 'CURRENT_VERSION='$(node -p -e "require('./package.json').version") >> $GITHUB_OUTPUT
+      - name: Check Skip Release
+        id: skip-release
+        run: echo 'SKIP='$(cat .skip-release) >> $GITHUB_OUTPUT
+    outputs:
+      SKIP: ${{ steps.skip-release.outputs.SKIP }}
+      CURRENT_VERSION: ${{ steps.current-version.outputs.CURRENT_VERSION }}
+  
+  publish:
+    needs: [should-release]
+    if: needs.should-release.outputs.SKIP != 'true'
+    name: Publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone
+        uses: actions/checkout@v3
+      - name: Node
+        uses: actions/setup-node@v3
+      - name: Cache Yarn
+        id: cache-nodemodules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: packages-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            packages-
+      - name: Yarn
+        if: steps.cache-nodemodules.outputs.cache-hit != 'true'
+        run: yarn install --immutable
+      - name: Setup NPM Registry
+        run: echo '//registry.npmjs.org/:_authToken=${{ secrets.NPM_AUTH_TOKEN }}' > ~/.npmrc && npm config get registry && npm whoami
+      - name: Build
+        run: npm run build
+      - name: Publish
+        run: npm publish
+      - name: Check Skip Release
+        id: skip-release
+        run: echo 'SKIP='$(cat .skip-release) >> $GITHUB_OUTPUT
+      - name: Create tag
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: "refs/tags/v${{ needs.should-release.outputs.CURRENT_VERSION }}",
+              sha: context.sha
+            })
+    outputs:
+      SKIP: ${{ steps.skip-release.outputs.SKIP }}
