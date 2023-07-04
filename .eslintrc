@@ -1,0 +1,4 @@
+{
+  "extends": ["./configs/default.js"],
+  "env": { "node": true }
+}
