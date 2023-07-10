@@ -1,7 +1,8 @@
 {
   "name": "@eduzz/eslint-config",
   "private": false,
-  "version": "0.0.3",
+  "version": "0.0.4",
+  "keywords": ["eduzz", "eslint"],
   "description": "Eduzz Eslint Config",
   "author": "Eduzz Team",
   "license": "MIT",
