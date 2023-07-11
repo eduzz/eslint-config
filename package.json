@@ -2,7 +2,10 @@
   "name": "@eduzz/eslint-config",
   "private": false,
   "version": "1.0.0",
-  "keywords": ["eduzz", "eslint"],
+  "keywords": [
+    "eduzz",
+    "eslint"
+  ],
   "description": "Eduzz Eslint Config",
   "author": "Eduzz Team",
   "license": "MIT",
@@ -17,7 +20,8 @@
   },
   "scripts": {
     "build": "yarn lint",
-    "lint": "eslint . --ext js,ts,tsx"
+    "lint": "eslint . --ext js,ts,tsx",
+    "update-deps": "yarn ncu -u"
   },
   "dependencies": {},
   "devDependencies": {
@@ -25,9 +29,10 @@
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-eslint-plugin": "^5.1.0",
     "eslint-plugin-import": "^2.27.5",
-    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-prettier": "^5.0.0",
     "eslint-plugin-unused-imports": "^2.0.0",
-    "prettier": "^2.8.8"
+    "npm-check-updates": "^16.10.15",
+    "prettier": "^3.0.0"
   },
   "peerDependencies": {}
 }
