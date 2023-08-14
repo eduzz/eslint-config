@@ -1,7 +1,15 @@
 module.exports = {
   extends: ['plugin:@typescript-eslint/recommended'],
   rules: {
-    '@typescript-eslint/no-unused-vars': ['warn'],
+    'no-unused-vars': 'off',
+    '@typescript-eslint/no-unused-vars': [
+      'error',
+      {
+        'argsIgnorePattern': '^_',
+        'varsIgnorePattern': '^_',
+        'caughtErrorsIgnorePattern': '^_'
+      }
+    ],
     '@typescript-eslint/adjacent-overload-signatures': ['error'],
     '@typescript-eslint/naming-convention': [
       'error',
