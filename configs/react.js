@@ -9,6 +9,10 @@ module.exports = {
     'react/prop-types': ['off'],
     'react/no-unescaped-entities': ['off'],
     'react-hooks/rules-of-hooks': 'error',
+    'react-hooks/exhaustive-deps': [
+      'warn',
+      { additionalHooks: '(usePromise|usePromiseCallback|usePromiseEffect|usePromiseRefresh)' }
+    ],
     'react/style-prop-object': 'off',
     'react/jsx-uses-react': 'off',
     'react/react-in-jsx-scope': 'off'
