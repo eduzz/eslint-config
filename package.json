@@ -1,7 +1,7 @@
 {
   "name": "@eduzz/eslint-config",
   "private": false,
-  "version": "1.1.0",
+  "version": "2.0.0-beta.7",
   "keywords": [
     "eduzz",
     "eslint"
@@ -20,19 +20,28 @@
   },
   "scripts": {
     "build": "yarn lint",
-    "lint": "eslint . --ext js,ts,tsx",
+    "lint": "eslint .",
     "update-deps": "yarn ncu -u"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@eduzz/eslint-config": "^2.0.0-beta.0",
+    "@types/eslint": "^8.56.7",
+    "eslint": "^8",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-eslint-plugin": "^5.5.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-prettier": "^5.1.3",
+    "eslint-plugin-react": "^7.34.1",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-native": "^4.1.0",
+    "eslint-plugin-unused-imports": "^3.1.0",
+    "parse-gitignore": "^2.0.0",
+    "prettier": "^3.2.5",
+    "prettier-plugin-tailwindcss": "^0.5.13",
+    "typescript-eslint": "^7.5.0"
+  },
   "devDependencies": {
-    "eslint": "^8.44.0",
-    "eslint-config-prettier": "^8.8.0",
-    "eslint-plugin-eslint-plugin": "^5.1.0",
-    "eslint-plugin-import": "^2.27.5",
-    "eslint-plugin-prettier": "^5.0.0",
-    "eslint-plugin-unused-imports": "^2.0.0",
-    "npm-check-updates": "^16.10.15",
-    "prettier": "^3.0.0"
+    "typescript": "^5.4.4"
   },
   "peerDependencies": {},
   "packageManager": "yarn@1.22.22+sha1.ac34549e6aa8e7ead463a7407e1c7390f61a6610"

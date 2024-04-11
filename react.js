@@ -1,3 +1,10 @@
+const configReact = require('./configs/react');
+
+const ignores = require('./ignores');
+const { configs } = require('./index');
+
 module.exports = {
-  extends: ['./configs/default', './configs/typescript', './configs/react']
+  ignores,
+  /** @type import('eslint').Linter.FlatConfig[] */
+  configs: [...configs, configReact]
 };

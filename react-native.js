@@ -1,9 +1,22 @@
+const { configs } = require('./react');
+const pluginReactNative = require('eslint-plugin-react-native');
+
+const ignores = require('./ignores');
+
 module.exports = {
-  extends: ['./configs/default', './configs/typescript', './configs/react'],
-  plugins: ['react-native'],
-  env: { 'react-native/react-native': true },
-  rules: {
-    'react-native/no-inline-styles': ['warn'],
-    'react-native/no-unused-styles': ['error']
-  }
+  ignores,
+  /** @type import('eslint').Linter.FlatConfig[] */
+  configs: [
+    ...configs,
+    {
+      name: '@eduzz/eslint-config-react-native',
+      plugins: {
+        'react-native': pluginReactNative
+      },
+      rules: {
+        'react-native/no-inline-styles': ['warn'],
+        'react-native/no-unused-styles': ['error']
+      }
+    }
+  ]
 };

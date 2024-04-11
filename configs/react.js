@@ -1,10 +1,18 @@
+const pluginReact = require('eslint-plugin-react');
+const pluginReactHooks = require('eslint-plugin-react-hooks');
+
+/** @type import('eslint').Linter.FlatConfig */
 module.exports = {
+  name: '@eduzz/eslint-config-react',
   settings: {
     react: { version: 'detect' }
   },
-  plugins: ['react', 'react-hooks'],
-  extends: ['plugin:react/recommended'],
+  plugins: {
+    'react': pluginReact,
+    'react-hooks': pluginReactHooks
+  },
   rules: {
+    ...pluginReact.configs.recommended.rules,
     'react/display-name': ['off'],
     'react/prop-types': ['off'],
     'react/no-unescaped-entities': ['off'],
