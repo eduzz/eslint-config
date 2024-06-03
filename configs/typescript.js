@@ -44,7 +44,6 @@ module.exports = [
       ],
       '@typescript-eslint/member-ordering': ['error'],
       '@typescript-eslint/no-namespace': ['error'],
-      '@typescript-eslint/no-require-imports': ['error'],
       '@typescript-eslint/no-object-literal-type-assertion': 'off',
       '@typescript-eslint/no-useless-constructor': 'error',
       '@typescript-eslint/no-empty-interface': 'off',

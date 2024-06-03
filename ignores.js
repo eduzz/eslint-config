@@ -30,5 +30,5 @@ module.exports = function gitignore(...extra) {
     }
   }
 
-  return [...ignores, ...extra];
+  return Array.from(new Set([...ignores.sort((a, b) => (a > b ? -1 : a == b ? 0 : 1)), ...extra]));
 };
