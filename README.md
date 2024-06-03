@@ -2,74 +2,38 @@
 
 Configuração padrão do eslint para os projetos da Eduzz.
 
-## Migração
-
-Se está migrando do `@eduzz/eslint-config-houston` altere as configurações do `.eslintrc [extends]` para:
-
-* `@eduzz/eslint-config-houston` >> `@eduzz/eslint-config/react`
-* `@eduzz/eslint-config-houston/native` >> `@eduzz/eslint-config/react-native`
-* `@eduzz/eslint-config-houston/node` >> `@eduzz/eslint-config`
-
 ## Instalação
 
-Para configurar no padrão da Eduzz, primerio você deve adicionar as dependências, pois o eslint exige que plugins devem,
-ser adicionados no projeto principal
-
-### Javascript / Typescript / Node
-
 ```sh
-yarn add --dev @eduzz/eslint-config eslint @typescript-eslint/eslint-plugin @typescript-eslint/parser eslint-config-prettier eslint-plugin-eslint-plugin eslint-plugin-import eslint-plugin-prettier eslint-plugin-unused-imports prettier
+yarn add --dev @eduzz/eslint-config
 ```
 
+1. `eslint.config.js`
 ```js
-// .eslintrc
-{
-  "extends": ["@eduzz/eslint-config"]
-}
+const { ignores, configs } = require('@eduzz/eslint-config'); // Javascript / Typescript / Node
+const { ignores, configs } = require('@eduzz/eslint-config/react'); // React
+const { ignores, configs } = require('@eduzz/eslint-config/react-native'); // React Native
 
-// .prettierrc.js
-module.exports = {
-  ...require('@eduzz/eslint-config/.prettierrc')
-};
+/** @type import('eslint').Linter.FlatConfig[] */
+module.exports = [...configs, { ignores: ignores() }];
 ```
-
-### React
-
-```sh
-yarn add --dev @eduzz/eslint-config eslint @typescript-eslint/eslint-plugin @typescript-eslint/parser eslint-config-prettier eslint-plugin-eslint-plugin eslint-plugin-import eslint-plugin-prettier eslint-plugin-react eslint-plugin-react-hooks eslint-plugin-unused-imports prettier
-```
-
+2. `.prettierrc.js`
 ```js
-// .eslintrc
-{
-  "extends": ["@eduzz/eslint-config/react"]
-}
-
-// .prettierrc.js
-module.exports = {
-  ...require('@eduzz/eslint-config/.prettierrc')
-};
-```
-
-### React Native
-
-```sh
-yarn add --dev @eduzz/eslint-config eslint eslint-plugin-react-native @typescript-eslint/eslint-plugin @typescript-eslint/parser eslint-config-prettier eslint-plugin-eslint-plugin eslint-plugin-import eslint-plugin-prettier eslint-plugin-react eslint-plugin-react-hooks eslint-plugin-unused-imports prettier
-```
-
-```js
-// .eslintrc
-{
-  "extends": ["@eduzz/eslint-config/react-native"]
-}
-
-// .prettierrc.js
 module.exports = {
   ...require('@eduzz/eslint-config/.prettierrc')
 };
 ```
 
 ## Configurações Extras
+
+### Ignore
+
+Por padrão todos os arquivos do `.gitignore` já são removidos, caso queira adicionar mais:
+
+```js
+/** @type import('eslint').Linter.FlatConfig[] */
+module.exports = [...configs, { ignores: ignores('**/ignore/**.js', 'ignore.js') }];
+```
 
 ### VSCode
 

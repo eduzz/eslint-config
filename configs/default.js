@@ -1,15 +1,26 @@
+const pluginImport = require('eslint-plugin-import');
+const pluginPrettier = require('eslint-plugin-prettier');
+
+/** @type import('eslint').Linter.FlatConfig */
 module.exports = {
+  name: '@eduzz/eslint-config-defaults',
   settings: {
     'import/internal-regex': '(^@eduzz|react|^@nestjs|^~)'
   },
-  plugins: ['prettier', 'eslint-plugin-unused-imports'],
-  extends: ['plugin:prettier/recommended', 'plugin:import/recommended', 'plugin:import/typescript'],
-  parserOptions: {
-    ecmaVersion: 10,
-    sourceType: 'module',
-    ecmaFeatures: { modules: true, jsx: true }
+  plugins: {
+    prettier: pluginPrettier,
+    import: pluginImport
+  },
+  languageOptions: {
+    parserOptions: {
+      ecmaVersion: 10,
+      sourceType: 'module',
+      ecmaFeatures: { modules: true, jsx: true }
+    }
   },
   rules: {
+    ...pluginPrettier.configs.recommended.rules,
+    ...pluginImport.configs.recommended.rules,
     'no-restricted-globals': ['error'],
     'object-shorthand': ['error', 'always', { avoidQuotes: true }],
     'padding-line-between-statements': [
@@ -31,7 +42,13 @@ module.exports = {
       '@mui/system',
       '@mui/styles'
     ],
-    'linebreak-style': ['error', 'unix'],
+    'no-restricted-syntax': [
+      'error',
+      {
+        selector: 'VariableDeclarator > Identifier[name=/^process/i]',
+        message: 'process is a reserved name for NodeJS Enviroment'
+      }
+    ],
     'max-lines': ['error', 300],
     'max-len': ['off'],
     'no-multiple-empty-lines': ['error', { max: 1 }],
@@ -43,7 +60,6 @@ module.exports = {
     'eqeqeq': 0,
     'quote-props': 'off',
     'no-useless-escape': 'off',
-    'unused-imports/no-unused-imports-ts': 'error',
     'import/no-unresolved': 'off',
     'import/named': 'off',
     'import/namespace': 'off',
@@ -53,7 +69,6 @@ module.exports = {
     'import/no-cycle': 'off',
     'import/no-deprecated': 'off',
     'import/no-unused-modules': 'off',
-    'import/newline-after-import': 'error',
     'import/first': 'error',
     'import/order': [
       'error',
@@ -75,11 +90,5 @@ module.exports = {
         ]
       }
     ]
-  },
-  overrides: [
-    {
-      files: '*.mdx',
-      rules: {}
-    }
-  ]
+  }
 };

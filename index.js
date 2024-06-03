@@ -1,4 +1,9 @@
+const configDefault = require('./configs/default');
+const configTypescript = require('./configs/typescript');
+const ignores = require('./ignores');
+
 module.exports = {
-  extends: ['./configs/default', './configs/typescript'],
-  env: { node: true }
+  ignores,
+  /** @type import('eslint').Linter.FlatConfig[] */
+  configs: [configDefault, ...configTypescript]
 };
