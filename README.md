@@ -35,6 +35,23 @@ Por padrão todos os arquivos do `.gitignore` já são removidos, caso queira ad
 module.exports = [...configs, { ignores: ignores('**/ignore/**.js', 'ignore.js') }];
 ```
 
+### Custom Rules
+
+Caso queira adicionar/remover alguma rule basta adicionar `rules` na última config:
+```js
+/** @type import('eslint').Linter.FlatConfig[] */
+module.exports = [
+  ...configs, 
+  {
+    ignores: ignores(),
+    rules: {
+      '@typescript-eslint/no-unused-vars': ['off']
+    }
+  }
+];
+```
+
+
 ### VSCode
 
 - Adicione a extensão do [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint).
