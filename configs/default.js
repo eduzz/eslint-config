@@ -1,5 +1,7 @@
+const { fixupPluginRules } = require('@eslint/compat');
 const pluginImport = require('eslint-plugin-import');
 const pluginPrettier = require('eslint-plugin-prettier');
+const pluginUnusedImports = require('eslint-plugin-unused-imports');
 
 /** @type import('eslint').Linter.FlatConfig */
 module.exports = {
@@ -8,8 +10,9 @@ module.exports = {
     'import/internal-regex': '(^@eduzz|react|^@nestjs|^~)'
   },
   plugins: {
-    prettier: pluginPrettier,
-    import: pluginImport
+    'prettier': pluginPrettier,
+    'import': pluginImport,
+    'unused-imports': pluginUnusedImports
   },
   languageOptions: {
     parserOptions: {
@@ -89,6 +92,7 @@ module.exports = {
           { pattern: '@/**', group: 'internal', position: 'after' }
         ]
       }
-    ]
+    ],
+    'unused-imports/no-unused-imports': 'error'
   }
 };
