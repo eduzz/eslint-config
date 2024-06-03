@@ -42,6 +42,13 @@ module.exports = {
       '@mui/system',
       '@mui/styles'
     ],
+    'no-restricted-syntax': [
+      'error',
+      {
+        selector: 'VariableDeclarator > Identifier[name=/^process/i]',
+        message: 'process is a reserved name for NodeJS Enviroment'
+      }
+    ],
     'max-lines': ['error', 300],
     'max-len': ['off'],
     'no-multiple-empty-lines': ['error', { max: 1 }],
