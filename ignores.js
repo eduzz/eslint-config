@@ -1,11 +1,11 @@
-const children = require('child_process');
+const childProcess = require('child_process');
 const fs = require('node:fs');
 
 const parse = require('parse-gitignore');
 
 module.exports = function gitignore(...extra) {
-  const files = children
-    .execSync("git ls-files '*.gitignore'")
+  const files = childProcess
+    .execSync('git ls-files *.gitignore')
     .toString()
     .split('\n')
     .filter(file => !!file);
@@ -23,6 +23,7 @@ module.exports = function gitignore(...extra) {
 
     const parsed = parse(`${content}\n`);
     const globs = parsed.globs();
+    console.log(JSON.stringify(globs, null, 2));
 
     for (const glob of globs) {
       if (glob.type === 'ignore') ignores.push(...glob.patterns);
