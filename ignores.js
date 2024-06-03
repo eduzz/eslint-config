@@ -3,7 +3,7 @@ const fs = require('node:fs');
 
 const parse = require('parse-gitignore');
 
-module.exports = function gitignore(extra = []) {
+module.exports = function gitignore(...extra) {
   const files = children
     .execSync("git ls-files '*.gitignore'")
     .toString()

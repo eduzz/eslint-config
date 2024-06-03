@@ -42,7 +42,6 @@ module.exports = {
       '@mui/system',
       '@mui/styles'
     ],
-    'linebreak-style': ['error', 'unix'],
     'max-lines': ['error', 300],
     'max-len': ['off'],
     'no-multiple-empty-lines': ['error', { max: 1 }],
