@@ -14,6 +14,7 @@ module.exports = function gitignore(...extra) {
 
   for (const file of files) {
     let content = '';
+    const baseFolder = file.replace('.gitignore', '');
 
     try {
       content = fs.readFileSync(file, 'utf8');
@@ -22,13 +23,13 @@ module.exports = function gitignore(...extra) {
     }
 
     const parsed = parse(`${content}\n`);
-    const globs = parsed.globs();
-
-    for (const glob of globs) {
-      if (glob.type === 'ignore') ignores.push(...glob.patterns);
-      else if (glob.type === 'unignore') ignores.push(...glob.patterns.map(pattern => `!${pattern}`));
-    }
+    ignores.push(
+      ...parsed.patterns.map(
+        pattern =>
+          `${pattern.startsWith('!') ? '!' : ''}${baseFolder}${pattern.replace(/^\!/im, '').replace(/^\//im, '')}`
+      )
+    );
   }
 
-  return Array.from(new Set([...ignores.sort((a, b) => (a > b ? -1 : a == b ? 0 : 1)), ...extra]));
+  return Array.from([...ignores, ...extra]);
 };
