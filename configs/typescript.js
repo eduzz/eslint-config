@@ -1,7 +1,7 @@
 const pluginImport = require('eslint-plugin-import');
 const tseslint = require('typescript-eslint');
 
-/** @type import('eslint').Linter.FlatConfig */
+/** @type import('eslint').Linter.Config */
 module.exports = [
   ...tseslint.configs.recommended.map(config => ({ ...config, files: ['**/*.ts', '**/*.tsx'] })),
   {

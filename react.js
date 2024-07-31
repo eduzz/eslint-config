@@ -5,6 +5,6 @@ const { configs } = require('./index');
 
 module.exports = {
   ignores,
-  /** @type import('eslint').Linter.FlatConfig[] */
+  /** @type import('eslint').Linter.Config[] */
   configs: [...configs, configReact]
 };

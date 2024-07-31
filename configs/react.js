@@ -2,7 +2,7 @@ const { fixupPluginRules } = require('@eslint/compat');
 const pluginReact = require('eslint-plugin-react');
 const pluginReactHooks = require('eslint-plugin-react-hooks');
 
-/** @type import('eslint').Linter.FlatConfig */
+/** @type import('eslint').Linter.Config */
 module.exports = {
   name: '@eduzz/eslint-config-react',
   settings: {

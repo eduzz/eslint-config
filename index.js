@@ -4,6 +4,6 @@ const ignores = require('./ignores');
 
 module.exports = {
   ignores,
-  /** @type import('eslint').Linter.FlatConfig[] */
+  /** @type import('eslint').Linter.Config[] */
   configs: [configDefault, ...configTypescript]
 };

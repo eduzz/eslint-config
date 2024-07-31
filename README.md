@@ -14,7 +14,7 @@ const { ignores, configs } = require('@eduzz/eslint-config'); // Javascript / Ty
 const { ignores, configs } = require('@eduzz/eslint-config/react'); // React
 const { ignores, configs } = require('@eduzz/eslint-config/react-native'); // React Native
 
-/** @type import('eslint').Linter.FlatConfig[] */
+/** @type import('eslint').Linter.Config[] */
 module.exports = [...configs, { ignores: ignores() }];
 ```
 2. `.prettierrc.js`
@@ -31,7 +31,7 @@ module.exports = {
 Por padrão todos os arquivos do `.gitignore` já são removidos, caso queira adicionar mais:
 
 ```js
-/** @type import('eslint').Linter.FlatConfig[] */
+/** @type import('eslint').Linter.Config[] */
 module.exports = [...configs, { ignores: ignores('**/ignore/**.js', 'ignore.js') }];
 ```
 
@@ -39,7 +39,7 @@ module.exports = [...configs, { ignores: ignores('**/ignore/**.js', 'ignore.js')
 
 Caso queira adicionar/remover alguma rule basta adicionar `rules` na última config:
 ```js
-/** @type import('eslint').Linter.FlatConfig[] */
+/** @type import('eslint').Linter.Config[] */
 module.exports = [
   ...configs, 
   {

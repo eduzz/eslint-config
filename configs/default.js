@@ -3,7 +3,7 @@ const pluginImport = require('eslint-plugin-import');
 const pluginPrettier = require('eslint-plugin-prettier');
 const pluginUnusedImports = require('eslint-plugin-unused-imports');
 
-/** @type import('eslint').Linter.FlatConfig */
+/** @type import('eslint').Linter.Config */
 module.exports = {
   name: '@eduzz/eslint-config-defaults',
   settings: {
@@ -11,7 +11,7 @@ module.exports = {
   },
   plugins: {
     'prettier': pluginPrettier,
-    'import': pluginImport,
+    'import': fixupPluginRules(pluginImport),
     'unused-imports': pluginUnusedImports
   },
   languageOptions: {
