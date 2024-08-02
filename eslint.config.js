@@ -1,1 +1,3 @@
-module.exports = require('./configs/default');
+const { ignores, configs } = require('.');
+
+module.exports = [...configs, { ignores: ignores() }];
