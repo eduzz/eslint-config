@@ -1,15 +1,10 @@
-const childProcess = require('child_process');
 const fs = require('node:fs');
 
+const { globSync } = require('glob');
 const parse = require('parse-gitignore');
 
 module.exports = function gitignore(...extra) {
-  const files = childProcess
-    .execSync('git ls-files *.gitignore')
-    .toString()
-    .split('\n')
-    .filter(file => !!file);
-
+  const files = globSync('./**/.gitignore');
   const ignores = [];
 
   for (const file of files) {
