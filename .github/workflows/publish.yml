@@ -19,7 +19,7 @@ jobs:
       - name: Node
         uses: actions/setup-node@v4
         with:
-          node-version: lts
+          node-version: 20
       - name: Deps
         run: npm i -g semver
       - name: Run should-release
@@ -45,7 +45,7 @@ jobs:
       - name: Node
         uses: actions/setup-node@v4
         with:
-          node-version: lts
+          node-version: 20
       - name: Cache Yarn
         id: cache-nodemodules
         uses: actions/cache@v4
