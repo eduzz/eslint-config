@@ -15,9 +15,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Clone
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
       - name: Deps
         run: npm i -g semver
       - name: Run should-release
@@ -39,12 +39,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Clone
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
       - name: Cache Yarn
         id: cache-nodemodules
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: node_modules
           key: packages-${{ hashFiles('yarn.lock') }}
@@ -63,7 +63,7 @@ jobs:
         id: skip-release
         run: echo 'SKIP='$(cat .skip-release) >> $GITHUB_OUTPUT
       - name: Create tag
-        uses: actions/github-script@v3
+        uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |

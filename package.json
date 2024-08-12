@@ -24,7 +24,7 @@
     "update-deps": "yarn ncu -u"
   },
   "dependencies": {
-    "@eduzz/eslint-config": "^2.1.3",
+    "@eduzz/eslint-config": "^2.2.0",
     "@eslint/compat": "^1.1.1",
     "@types/eslint": "^9.6.0",
     "eslint": "^9",
@@ -35,12 +35,12 @@
     "eslint-plugin-react": "^7.35.0",
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-native": "^4.1.0",
-    "eslint-plugin-unused-imports": "^4.0.1",
+    "eslint-plugin-unused-imports": "^4.1.3",
     "glob": "^11.0.0",
     "parse-gitignore": "^2.0.0",
     "prettier": "^3.3.3",
-    "prettier-plugin-tailwindcss": "^0.6.5",
-    "typescript-eslint": "^7.18.0"
+    "prettier-plugin-tailwindcss": "^0.6.6",
+    "typescript-eslint": "^8.1.0"
   },
   "devDependencies": {
     "typescript": "^5.5.4"
