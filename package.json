@@ -1,7 +1,7 @@
 {
   "name": "@eduzz/eslint-config",
   "private": false,
-  "version": "2.3.0",
+  "version": "2.3.1",
   "keywords": [
     "eduzz",
     "eslint"
@@ -35,7 +35,7 @@
     "eslint-plugin-react": "^7.35.0",
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-native": "^4.1.0",
-    "eslint-plugin-unused-imports": "^4.0.1",
+    "eslint-plugin-unused-imports": "4.0.1",
     "glob": "^11.0.0",
     "parse-gitignore": "^2.0.0",
     "prettier": "^3.3.3",
