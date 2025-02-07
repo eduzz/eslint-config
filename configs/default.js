@@ -48,7 +48,7 @@ module.exports = {
     'no-restricted-syntax': [
       'error',
       {
-        selector: 'VariableDeclarator > Identifier[name=/^process/i]',
+        selector: "VariableDeclarator > Identifier[name='process']",
         message: 'process is a reserved name for NodeJS Enviroment'
       }
     ],
@@ -56,6 +56,14 @@ module.exports = {
     'max-len': ['off'],
     'no-multiple-empty-lines': ['error', { max: 1 }],
     'no-trailing-spaces': ['error'],
+    'no-unused-vars': [
+      'error',
+      {
+        varsIgnorePattern: '^_',
+        argsIgnorePattern: '^_',
+        catchErrors: 'all'
+      }
+    ],
     'prefer-const': ['error', { destructuring: 'all' }],
     'no-extra-semi': ['error'],
     'no-var': ['error'],
