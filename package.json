@@ -1,7 +1,7 @@
 {
   "name": "@eduzz/eslint-config",
   "private": false,
-  "version": "2.3.2",
+  "version": "2.3.3",
   "keywords": [
     "eduzz",
     "eslint"
@@ -24,7 +24,6 @@
     "update-deps": "yarn ncu -u"
   },
   "dependencies": {
-    "@eduzz/eslint-config": "^2.3.1",
     "@eslint/compat": "^1.2.6",
     "@types/eslint": "^9.6.1",
     "eslint": "^9",
