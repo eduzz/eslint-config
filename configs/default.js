@@ -61,7 +61,7 @@ module.exports = {
       {
         varsIgnorePattern: '^_',
         argsIgnorePattern: '^_',
-        catchErrors: 'all'
+        caughtErrorsIgnorePattern: '^_?(err|error|e)$'
       }
     ],
     'prefer-const': ['error', { destructuring: 'all' }],
