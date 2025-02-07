@@ -15,7 +15,7 @@ module.exports = [
         {
           argsIgnorePattern: '^_',
           varsIgnorePattern: '^_',
-          caughtErrorsIgnorePattern: 'all'
+          caughtErrors: 'all'
         }
       ],
       '@typescript-eslint/adjacent-overload-signatures': ['error'],
