@@ -11,11 +11,11 @@ module.exports = [
       ...pluginImport.configs.typescript.rules,
       'no-unused-vars': 'off',
       '@typescript-eslint/no-unused-vars': [
-        'warn',
+        'error',
         {
           argsIgnorePattern: '^_',
           varsIgnorePattern: '^_',
-          caughtErrorsIgnorePattern: '^_'
+          caughtErrorsIgnorePattern: 'all'
         }
       ],
       '@typescript-eslint/adjacent-overload-signatures': ['error'],
