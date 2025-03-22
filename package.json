@@ -1,7 +1,7 @@
 {
   "name": "@eduzz/eslint-config",
   "private": false,
-  "version": "2.4.0",
+  "version": "2.4.1",
   "keywords": [
     "eduzz",
     "eslint"
@@ -40,6 +40,9 @@
     "prettier": "^3.4.2",
     "prettier-plugin-tailwindcss": "^0.6.11",
     "typescript-eslint": "^8.23.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.2"
   },
   "peerDependencies": {
     "typescript": ">=5.4.0"
