@@ -9,6 +9,12 @@ module.exports = [
     files: ['**/*.ts', '**/*.tsx'],
     rules: {
       ...pluginImport.configs.typescript.rules,
+      '@typescript-eslint/consistent-type-imports': [
+        'warn',
+        {
+          fixStyle: 'inline-type-imports'
+        }
+      ],
       'no-unused-vars': 'off',
       '@typescript-eslint/no-unused-vars': [
         'warn',
