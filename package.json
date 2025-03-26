@@ -1,7 +1,7 @@
 {
   "name": "@eduzz/eslint-config",
   "private": false,
-  "version": "2.4.1",
+  "version": "2.4.2",
   "keywords": [
     "eduzz",
     "eslint"
@@ -24,22 +24,22 @@
     "update-deps": "yarn ncu -u"
   },
   "dependencies": {
-    "@eslint/compat": "^1.2.6",
+    "@eslint/compat": "^1.2.7",
     "@types/eslint": "^9.6.1",
     "eslint": "^9",
-    "eslint-config-prettier": "^10.0.1",
+    "eslint-config-prettier": "^10.1.1",
     "eslint-plugin-eslint-plugin": "^6.4.0",
     "eslint-plugin-import": "^2.31.0",
-    "eslint-plugin-prettier": "^5.2.3",
+    "eslint-plugin-prettier": "^5.2.5",
     "eslint-plugin-react": "^7.37.4",
-    "eslint-plugin-react-hooks": "^5.1.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-native": "^5.0.0",
     "eslint-plugin-unused-imports": "^4.1.4",
     "glob": "^11.0.1",
     "parse-gitignore": "^2.0.0",
-    "prettier": "^3.4.2",
+    "prettier": "^3.5.3",
     "prettier-plugin-tailwindcss": "^0.6.11",
-    "typescript-eslint": "^8.23.0"
+    "typescript-eslint": "^8.28.0"
   },
   "devDependencies": {
     "typescript": "^5.8.2"
