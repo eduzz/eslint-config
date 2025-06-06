@@ -1,9 +1,12 @@
+const js = require('@eslint/js');
 const pluginImport = require('eslint-plugin-import');
 const tseslint = require('typescript-eslint');
 
 /** @type import('eslint').Linter.Config */
 module.exports = [
+  js.configs.recommended,
   ...tseslint.configs.recommended.map(config => ({ ...config, files: ['**/*.ts', '**/*.tsx'] })),
+  ...tseslint.configs.recommendedTypeChecked.map(config => ({ ...config, files: ['**/*.ts', '**/*.tsx'] })),
   {
     name: '@eduzz/eslint-config-typescript',
     files: ['**/*.ts', '**/*.tsx'],
@@ -58,6 +61,13 @@ module.exports = [
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/explicit-module-boundary-types': 'off',
       '@typescript-eslint/explicit-member-accessibility': ['error', { overrides: { constructors: 'no-public' } }]
+    },
+    settings: {
+      'import/resolver': {
+        typescript: {
+          project: './tsconfig.json'
+        }
+      }
     }
   }
 ];
