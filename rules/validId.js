@@ -1,4 +1,4 @@
-const isInvalidId = text => {
+const isIdMalformed = text => {
   return !/^[A-Za-z][\w-:.]*$/.test(text);
 };
 
@@ -62,7 +62,7 @@ module.exports = {
           return;
         }
 
-        if (isInvalidId(node.value.value)) {
+        if (isIdMalformed(node.value.value)) {
           context.report({
             node,
             message: INVALID_ID_MESSAGE
