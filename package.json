@@ -1,7 +1,7 @@
 {
   "name": "@eduzz/eslint-config",
   "private": false,
-  "version": "2.4.5",
+  "version": "2.5.0",
   "keywords": [
     "eduzz",
     "eslint"
