@@ -3,6 +3,10 @@ const isIdMalformed = text => {
 };
 
 const extractAttributeValue = node => {
+  if (!node.value || !node.value.type) {
+    return '';
+  }
+
   if (node.value.type === 'Literal') {
     return node.value.value;
   }
@@ -12,7 +16,7 @@ const extractAttributeValue = node => {
   }
 
   if (node.value.expression.type === 'TemplateLiteral') {
-    return node.value.expression.expressions.map(expr => expr.value).join('');
+    return node.value.expression.quasis.map(({ value }) => value.cooked).join('');
   }
 
   return '';
@@ -56,9 +60,9 @@ module.exports = {
         const isJsxExpressionTemplateLiteralIdEmpty =
           node.value.type === 'JSXExpressionContainer' &&
           node.value.expression.type === 'TemplateLiteral' &&
-          node.value.expression.expressions.length === 1 &&
-          !Boolean(node.value.expression.expressions[0].value.trim()) &&
-          'value' in node.value.expression.expressions[0];
+          node.value.expression.quasis.length === 1 &&
+          'value' in node.value.expression.quasis[0] &&
+          !Boolean(node.value.expression.quasis[0].value.cooked.trim());
 
         if (isJsxExpressionTemplateLiteralIdEmpty) {
           context.report({
@@ -79,6 +83,7 @@ module.exports = {
         }
 
         const value = extractAttributeValue(node);
+        console.log('value ->', value);
 
         if (isIdMalformed(value)) {
           context.report({
