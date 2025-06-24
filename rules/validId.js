@@ -2,6 +2,22 @@ const isIdMalformed = text => {
   return !/^[A-Za-z][\w-:.]*$/.test(text);
 };
 
+const extractAttributeValue = node => {
+  if (node.value.type === 'Literal') {
+    return node.value.value;
+  }
+
+  if (node.value.expression.type === 'Literal') {
+    return node.value.expression.value;
+  }
+
+  if (node.value.expression.type === 'TemplateLiteral') {
+    return node.value.expression.expressions.map(expr => expr.value).join('');
+  }
+
+  return '';
+};
+
 const INVALID_ID_MESSAGE =
   'O id está em um formato inválido, espera-se que o id:\n- deve começar com uma letra\n- pode conter (-, _, :, .)\n- não pode conter espaços ou caracteres especiais';
 const REPEATED_ID_MESSAGE = 'Você já esta utilizando este id em outro elemento =]';
@@ -27,7 +43,7 @@ module.exports = {
         const isJsxExpressionLiteralIdEmpty =
           node.value.type === 'JSXExpressionContainer' &&
           node.value.expression.type === 'Literal' &&
-          node.value.expression.value === '';
+          node.value.expression.value.trim() === '';
 
         if (isJsxExpressionLiteralIdEmpty) {
           context.report({
@@ -41,7 +57,7 @@ module.exports = {
           node.value.type === 'JSXExpressionContainer' &&
           node.value.expression.type === 'TemplateLiteral' &&
           node.value.expression.expressions.length === 1 &&
-          !Boolean(node.value.expression.expressions[0].value) &&
+          !Boolean(node.value.expression.expressions[0].value.trim()) &&
           'value' in node.value.expression.expressions[0];
 
         if (isJsxExpressionTemplateLiteralIdEmpty) {
@@ -52,7 +68,7 @@ module.exports = {
           return;
         }
 
-        const isLiteralIdEmpty = node.value.type === 'Literal' && node.value.value === '';
+        const isLiteralIdEmpty = node.value.type === 'Literal' && node.value.value.trim() === '';
 
         if (isLiteralIdEmpty) {
           context.report({
@@ -62,7 +78,9 @@ module.exports = {
           return;
         }
 
-        if (isIdMalformed(node.value.value)) {
+        const value = extractAttributeValue(node);
+
+        if (isIdMalformed(value)) {
           context.report({
             node,
             message: INVALID_ID_MESSAGE
