@@ -83,7 +83,6 @@ module.exports = {
         }
 
         const value = extractAttributeValue(node);
-        console.log('value ->', value);
 
         if (isIdMalformed(value)) {
           context.report({
