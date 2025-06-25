@@ -44,6 +44,14 @@ module.exports = {
           return;
         }
 
+        const isJsxExpressionValueVariable =
+          node.value.type === 'JSXExpressionContainer' &&
+          (node.value.expression.type === 'Identifier' || node.value.expression.type === 'MemberExpression');
+
+        if (isJsxExpressionValueVariable) {
+          return;
+        }
+
         const isJsxExpressionLiteralIdEmpty =
           node.value.type === 'JSXExpressionContainer' &&
           node.value.expression.type === 'Literal' &&
