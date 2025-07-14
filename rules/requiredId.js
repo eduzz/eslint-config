@@ -21,6 +21,8 @@ const isDefaultImportSourceSupported = source =>
     'antd/lib/checkbox/Checkbox'
   ].includes(source);
 
+const excludeNestedComponentsNameList = [['Checkbox', 'Group']];
+
 module.exports = {
   meta: {
     type: 'suggestion',
@@ -82,6 +84,13 @@ module.exports = {
         }
 
         if (node.name.type === 'JSXMemberExpression' && !components.includes(node.name.object.name)) {
+          return;
+        }
+
+        if (
+          node.name.type === 'JSXMemberExpression' &&
+          excludeNestedComponentsNameList.includes([node.name.object.name, node.name.property.name])
+        ) {
           return;
         }
 
