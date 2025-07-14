@@ -46,7 +46,10 @@ module.exports = {
 
         const isJsxExpressionValueVariable =
           node.value.type === 'JSXExpressionContainer' &&
-          (node.value.expression.type === 'Identifier' || node.value.expression.type === 'MemberExpression');
+          (node.value.expression.type === 'Identifier' ||
+            node.value.expression.type === 'MemberExpression' ||
+            node.value.expression.type === 'ObjectExpression' ||
+            node.value.expression.type === 'ArrayExpression');
 
         if (isJsxExpressionValueVariable) {
           return;
