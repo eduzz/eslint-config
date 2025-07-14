@@ -89,7 +89,9 @@ module.exports = {
 
         if (
           node.name.type === 'JSXMemberExpression' &&
-          excludeNestedComponentsNameList.includes([node.name.object.name, node.name.property.name])
+          excludeNestedComponentsNameList.some(
+            ([parent, children]) => parent === node.name.object.name && children === node.name.property.name
+          )
         ) {
           return;
         }
