@@ -5,7 +5,7 @@ const parse = require('parse-gitignore');
 
 module.exports = function gitignore(...extra) {
   const files = globSync('./**/.gitignore');
-  const ignores = [];
+  const ignores = ['dist/**', 'build/**', '.turbo/**', 'node_modules/**'];
 
   for (const file of files) {
     let content = '';
