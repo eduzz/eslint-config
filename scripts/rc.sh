@@ -10,8 +10,10 @@ if [ -z "$PACKAGE_JSON" ]; then
 fi
 
 VERSION=$(jq -r .version "$PACKAGE_JSON")
+PACKAGE_NAME=$(jq -r .name "$PACKAGE_JSON")
+BASE_VERSION=$(echo "$VERSION" | grep -o "^[0-9]\+\.[0-9]\+\.[0-9]\+")
 
-RC_VERSION=$(npm view @eduzz/ui-layout versions --json | jq -r '.[]' | grep "4.3.0-rc" | sort -V | tail -1 | awk -F'-rc.' '{print $1"-rc."($2+1)}')
+RC_VERSION=$(npm view "$PACKAGE_NAME" versions --json | jq -r '.[]' | grep "${BASE_VERSION}-rc" | sort -V | tail -1 | awk -F'-rc.' '{print $1"-rc."($2+1)}')
 
 if [ -z "$RC_VERSION" ]; then
   RC_VERSION="${VERSION}-rc.0"
