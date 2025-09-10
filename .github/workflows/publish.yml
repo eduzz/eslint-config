@@ -26,29 +26,23 @@ jobs:
         uses: actions/cache@v3
         with:
           path: node_modules
-          key: packages-${{ hashFiles('pnpm-lock.yaml') }}
+          key: packages-${{ hashFiles('yarn.lock') }}
           restore-keys: |
             packages-
-      - name: Install Pnpm
-        run: npm i -g pnpm
-      - name: Pnpm Install
-        run: pnpm install
+      - name: Install
+        run: yarn install
       - name: Lint
-        run: pnpm lint
+        run: yarn lint
       - name: Build
-        run: pnpm build
+        run: yarn build
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
           name: build-artifact
           path: ./
-  
+
   should-release:
     needs: [build]
-    strategy:
-      fail-fast: false
-      matrix:
-        app: [antd, layout, tailwind]
     name: Should Release
     runs-on: ubuntu-latest
     steps:
@@ -60,28 +54,20 @@ jobs:
         run: npm i -g semver
       - name: Run should-release
         shell: bash
-        run: scripts/should-release.sh packages/${{ matrix.app }}/package.json
+        run: scripts/should-release.sh packages/your-lib/package.json
       - name: Current Version
         id: current-version
-        run: echo '${{ matrix.app }}_current_version='$(node -p -e "require('./packages/${{ matrix.app }}/package.json').version") >> $GITHUB_OUTPUT
+        run: echo 'current_version='$(node -p -e "require('./packages/your-lib/package.json').version") >> $GITHUB_OUTPUT
       - name: Check Skip Release
         id: skip-release
-        run: echo '${{ matrix.app }}_skip='$(cat .skip-release) >> $GITHUB_OUTPUT
+        run: echo 'skip='$(cat .skip-release) >> $GITHUB_OUTPUT
     outputs:
-      antd_skip: ${{ steps.skip-release.outputs.antd_skip }}
-      antd_current_version: ${{ steps.current-version.outputs.antd_current_version }}
-      tailwind_skip: ${{ steps.skip-release.outputs.tailwind_skip }}
-      tailwind_current_version: ${{ steps.current-version.outputs.tailwind_current_version }}
-      layout_skip: ${{ steps.skip-release.outputs.layout_skip }}
-      layout_current_version: ${{ steps.current-version.outputs.layout_current_version }}
+      skip: ${{ steps.skip-release.outputs.skip }}
+      current_version: ${{ steps.current-version.outputs.current_version }}
 
   release-candidate:
     needs: [should-release]
     if: github.ref != 'refs/heads/master' && (startsWith(github.ref, 'refs/heads/feature-') || startsWith(github.ref, 'refs/heads/hotfix-') || startsWith(github.ref, 'refs/heads/release-'))
-    strategy:
-      fail-fast: false
-      matrix:
-        app: [antd, layout, tailwind]
     name: Release Candidate
     runs-on: ubuntu-latest
     steps:
@@ -92,10 +78,10 @@ jobs:
           name: build-artifact
           path: ./
       - name: Update package.json with RC version
-        if: ${{ needs.should-release.outputs[format('{0}_skip', matrix.app)] != 'true' }}
-        run: scripts/rc.sh packages/${{ matrix.app }}/package.json
+        if: ${{ needs.should-release.outputs.skip != 'true' }}
+        run: scripts/rc.sh packages/your-lib/package.json
       - name: Upload Updated Artifact
-        if: ${{ needs.should-release.outputs[format('{0}_skip', matrix.app)] != 'true' }}
+        if: ${{ needs.should-release.outputs.skip != 'true' }}
         uses: actions/upload-artifact@v4
         with:
           name: build-artifact
@@ -105,23 +91,19 @@ jobs:
   publish:
     needs: [should-release, release-candidate]
     if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/heads/hotfix-') || startsWith(github.ref, 'refs/heads/release-')
-    strategy:
-      fail-fast: false
-      matrix:
-        app: [antd, layout, tailwind]
     name: Publish
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - id: npm-publish
-        if: ${{ needs.should-release.outputs[format('{0}_skip', matrix.app)] != 'true' }}
+        if: ${{ needs.should-release.outputs.skip != 'true' }}
         uses: ./.github/actions/npm-publish
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          version: ${{ needs.should-release.outputs[format('{0}_current_version', matrix.app)] }}
+          version: ${{ needs.should-release.outputs.current_version }}
           npm-auth-token: ${{ secrets.NPM_AUTH_TOKEN }}
-          path: ./packages/${{ matrix.app }}
-  
+          path: ./packages/your-lib
+
   create-tag:
     needs: [publish]
     if: github.ref == 'refs/heads/master'
@@ -157,7 +139,7 @@ jobs:
           webhook-url: ${{ secrets.PI_DISCORD_WEBHOOK }}
           title: "${{ github.repository }}/${{ github.ref_name }}"
           url: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          description: "🎨 DEPLOYED / Uma linha de CSS =]"
+          description: "🫡 DEPLOYED / Linterzinhiúu =]"
           color: 65280
           footer-text: "${{ github.sha }} - ${{ github.event.head_commit.message }}"
       - name: Discord Message on Failure
