@@ -90,7 +90,10 @@ jobs:
 
   publish:
     needs: [should-release, release-candidate]
-    if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/heads/hotfix-') || startsWith(github.ref, 'refs/heads/release-')
+    if: |
+      always() && 
+      needs.should-release.result != 'failure' && 
+      (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/heads/hotfix-') || startsWith(github.ref, 'refs/heads/release-'))
     name: Publish
     runs-on: ubuntu-latest
     steps:
