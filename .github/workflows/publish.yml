@@ -1,81 +1,155 @@
-name: Publish
+name: Deploy
 
 on:
   push:
     branches:
       - master
+      - feature-*
+      - release-*
+      - hotfix-*
 
 concurrency: 
   group: publish-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone
+        uses: actions/checkout@v3
+      - name: Node
+        uses: actions/setup-node@v3
+      - name: Cache 
+        id: cache-nodemodules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: packages-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            packages-
+      - name: Install
+        run: yarn install
+      - name: Lint
+        run: yarn lint
+      - name: Build
+        run: yarn build
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifact
+          path: ./
+
   should-release:
+    needs: [build]
     name: Should Release
     runs-on: ubuntu-latest
     steps:
       - name: Clone
         uses: actions/checkout@v4
       - name: Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
+        uses: actions/setup-node@v3
       - name: Deps
         run: npm i -g semver
       - name: Run should-release
-        run: node ./scripts/should-release.js
+        shell: bash
+        run: scripts/should-release.sh package.json
       - name: Current Version
         id: current-version
-        run: echo 'CURRENT_VERSION='$(node -p -e "require('./package.json').version") >> $GITHUB_OUTPUT
+        run: echo 'current_version='$(node -p -e "require('./package.json').version") >> $GITHUB_OUTPUT
       - name: Check Skip Release
         id: skip-release
-        run: echo 'SKIP='$(cat .skip-release) >> $GITHUB_OUTPUT
+        run: echo 'skip='$(cat .skip-release) >> $GITHUB_OUTPUT
     outputs:
-      SKIP: ${{ steps.skip-release.outputs.SKIP }}
-      CURRENT_VERSION: ${{ steps.current-version.outputs.CURRENT_VERSION }}
-  
-  publish:
+      skip: ${{ steps.skip-release.outputs.skip }}
+      current_version: ${{ steps.current-version.outputs.current_version }}
+
+  release-candidate:
     needs: [should-release]
-    if: needs.should-release.outputs.SKIP != 'true'
+    if: github.ref != 'refs/heads/master' && (startsWith(github.ref, 'refs/heads/feature-') || startsWith(github.ref, 'refs/heads/hotfix-') || startsWith(github.ref, 'refs/heads/release-'))
+    name: Release Candidate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifact
+          path: ./
+      - name: Update package.json with RC version
+        if: ${{ needs.should-release.outputs.skip != 'true' }}
+        run: scripts/rc.sh package.json
+      - name: Upload Updated Artifact
+        if: ${{ needs.should-release.outputs.skip != 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifact
+          path: ./
+          overwrite: true
+
+  publish:
+    needs: [should-release, release-candidate]
+    if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/heads/hotfix-') || startsWith(github.ref, 'refs/heads/release-')
     name: Publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - id: npm-publish
+        if: ${{ needs.should-release.outputs.skip != 'true' }}
+        uses: ./.github/actions/npm-publish
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          version: ${{ needs.should-release.outputs.current_version }}
+          npm-auth-token: ${{ secrets.NPM_AUTH_TOKEN }}
+          path: .
+
+  create-tag:
+    needs: [publish]
+    if: github.ref == 'refs/heads/master'
+    name: Create Tag
     runs-on: ubuntu-latest
     steps:
       - name: Clone
         uses: actions/checkout@v4
-      - name: Node
-        uses: actions/setup-node@v4
         with:
-          node-version: 20
-      - name: Cache Yarn
-        id: cache-nodemodules
-        uses: actions/cache@v4
+          fetch-depth: 0
+      - name: Semver
+        id: semver
+        uses: luanlmd/semver-composite-action@v1.0.0
         with:
-          path: node_modules
-          key: packages-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            packages-
-      - name: Yarn
-        if: steps.cache-nodemodules.outputs.cache-hit != 'true'
-        run: yarn install --immutable
-      - name: Setup NPM Registry
-        run: echo '//registry.npmjs.org/:_authToken=${{ secrets.NPM_AUTH_TOKEN }}' > ~/.npmrc && npm config get registry && npm whoami
-      - name: Build
-        run: npm run build
-      - name: Publish
-        run: npm publish
-      - name: Check Skip Release
-        id: skip-release
-        run: echo 'SKIP='$(cat .skip-release) >> $GITHUB_OUTPUT
+          repo-path: ${{ github.workspace }}
       - name: Create tag
-        uses: actions/github-script@v7
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git tag ${{ steps.semver.outputs.version }}
+          git push --tags
+
+  notify:
+    needs: [build, should-release, release-candidate, publish, create-tag]
+    if: always()
+    name: Notify
+    runs-on: ubuntu-latest
+    steps:
+      - name: Discord Message on Success
+        if: ${{ needs.build.result != 'failure' && needs.should-release.result != 'failure' && needs.publish.result != 'failure' && needs.create-tag.result != 'failure'}}
+        uses: vitorvmrs/discord-send-embed@0f0cb61f7ed052734cc11765a5b2c5d0a5c3d9c2
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            github.rest.git.createRef({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              ref: "refs/tags/v${{ needs.should-release.outputs.CURRENT_VERSION }}",
-              sha: context.sha
-            })
-    outputs:
-      SKIP: ${{ steps.skip-release.outputs.SKIP }}
+          webhook-url: ${{ secrets.PI_DISCORD_WEBHOOK }}
+          title: "${{ github.repository }}/${{ github.ref_name }}"
+          url: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          description: "🫡 DEPLOYED / Linterzinhiúu =]"
+          color: 65280
+          footer-text: "${{ github.sha }} - ${{ github.event.head_commit.message }}"
+      - name: Discord Message on Failure
+        if: ${{ needs.build.result == 'failure' || needs.should-release.result == 'failure' || needs.publish.result == 'failure' || needs.create-tag.result == 'failure' }}
+        uses: vitorvmrs/discord-send-embed@0f0cb61f7ed052734cc11765a5b2c5d0a5c3d9c2
+        with:
+          webhook-url: ${{ secrets.PI_DISCORD_WEBHOOK }}
+          title: "${{ github.repository }}/${{ github.ref_name }}"
+          url: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          description: "❌ FAILED / Deu ruim =["
+          color: 16711680
+          footer-text: "${{ github.sha }} - ${{ github.event.head_commit.message }}"
+  
