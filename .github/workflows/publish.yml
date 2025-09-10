@@ -54,10 +54,10 @@ jobs:
         run: npm i -g semver
       - name: Run should-release
         shell: bash
-        run: scripts/should-release.sh packages/your-lib/package.json
+        run: scripts/should-release.sh package.json
       - name: Current Version
         id: current-version
-        run: echo 'current_version='$(node -p -e "require('./packages/your-lib/package.json').version") >> $GITHUB_OUTPUT
+        run: echo 'current_version='$(node -p -e "require('./package.json').version") >> $GITHUB_OUTPUT
       - name: Check Skip Release
         id: skip-release
         run: echo 'skip='$(cat .skip-release) >> $GITHUB_OUTPUT
@@ -79,7 +79,7 @@ jobs:
           path: ./
       - name: Update package.json with RC version
         if: ${{ needs.should-release.outputs.skip != 'true' }}
-        run: scripts/rc.sh packages/your-lib/package.json
+        run: scripts/rc.sh package.json
       - name: Upload Updated Artifact
         if: ${{ needs.should-release.outputs.skip != 'true' }}
         uses: actions/upload-artifact@v4
