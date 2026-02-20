@@ -18,6 +18,19 @@ const { ignores, configs } = require('@eduzz/eslint-config/react-native'); // Re
 module.exports = [...configs, { ignores: ignores() }];
 ```
 
+`eslint.config.js` se for "type": "module" no package.json:
+```js
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+
+const { ignores, configs } = require('@eduzz/eslint-config'); // Javascript / Typescript / Node
+const { ignores, configs } = require('@eduzz/eslint-config/react'); // React
+const { ignores, configs } = require('@eduzz/eslint-config/react-native'); // React Native
+
+/** @type import('eslint').Linter.Config[] */
+module.exports = [...configs, { ignores: ignores() }];
+```
+
 ## Configurações Extras
 
 ### Ignore
@@ -37,11 +50,11 @@ Caso queira adicionar/remover alguma rule basta adicionar `rules` na última con
 module.exports = [
   ...configs, 
   {
-    ignores: ignores(),
     rules: {
       '@typescript-eslint/no-unused-vars': ['off']
     }
-  }
+  },
+  { ignores: ignores('**/ignore/**.js', 'ignore.js') }
 ];
 ```
 
