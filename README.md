@@ -8,7 +8,7 @@ Configuração padrão do eslint para os projetos da Eduzz.
 yarn add --dev @eduzz/eslint-config
 ```
 
-1. `eslint.config.js`
+`eslint.config.js`
 ```js
 const { ignores, configs } = require('@eduzz/eslint-config'); // Javascript / Typescript / Node
 const { ignores, configs } = require('@eduzz/eslint-config/react'); // React
@@ -16,12 +16,6 @@ const { ignores, configs } = require('@eduzz/eslint-config/react-native'); // Re
 
 /** @type import('eslint').Linter.Config[] */
 module.exports = [...configs, { ignores: ignores() }];
-```
-2. `.prettierrc.js`
-```js
-module.exports = {
-  ...require('@eduzz/eslint-config/.prettierrc')
-};
 ```
 
 ## Configurações Extras

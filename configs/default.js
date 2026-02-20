@@ -1,6 +1,6 @@
 const { fixupPluginRules } = require('@eslint/compat');
+const stylistic = require('@stylistic/eslint-plugin');
 const pluginImport = require('eslint-plugin-import');
-const pluginPrettier = require('eslint-plugin-prettier');
 const pluginUnusedImports = require('eslint-plugin-unused-imports');
 
 /** @type import('eslint').Linter.Config */
@@ -10,7 +10,7 @@ module.exports = {
     'import/internal-regex': '(^@eduzz|react|^@nestjs|^~)'
   },
   plugins: {
-    'prettier': pluginPrettier,
+    '@stylistic': stylistic,
     'import': fixupPluginRules(pluginImport),
     'unused-imports': pluginUnusedImports
   },
@@ -22,7 +22,6 @@ module.exports = {
     }
   },
   rules: {
-    ...pluginPrettier.configs.recommended.rules,
     ...pluginImport.configs.recommended.rules,
     'no-restricted-globals': ['error'],
     'object-shorthand': ['error', 'always', { avoidQuotes: true }],
@@ -101,6 +100,19 @@ module.exports = {
         ]
       }
     ],
-    'unused-imports/no-unused-imports': 'error'
+    'unused-imports/no-unused-imports': 'error',
+    '@stylistic/quotes': ['error', 'single', { avoidEscape: true }],
+    '@stylistic/jsx-quotes': ['error', 'prefer-single'],
+    '@stylistic/semi': ['error', 'always'],
+    '@stylistic/comma-dangle': ['error', 'never'],
+    '@stylistic/arrow-parens': ['error', 'as-needed'],
+    '@stylistic/object-curly-spacing': ['error', 'always'],
+    '@stylistic/indent': ['error', 2, { 'VariableDeclarator': 'first',  'outerIIFEBody': 1, 'MemberExpression': 1, 'ArrayExpression': 1, 'flatTernaryExpressions': true, 'offsetTernaryExpressions': true }],
+    '@stylistic/max-len': ['error', { code: 120, ignoreTemplateLiterals: true, ignoreStrings: true, ignoreComments: true }],
+    '@stylistic/quote-props': ['error', 'consistent'],
+    '@stylistic/eol-last': ['error', 'always'],
+    '@stylistic/no-trailing-spaces': 'error',
+    '@stylistic/jsx-closing-bracket-location': ['error', 'line-aligned'],
+    '@stylistic/jsx-first-prop-new-line': ['error', 'multiline']
   }
 };
