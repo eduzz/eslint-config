@@ -22,6 +22,7 @@ module.exports = {
     }
   },
   rules: {
+    ...stylistic.configs.recommended.rules,
     ...pluginImport.configs.recommended.rules,
     'no-restricted-globals': ['error'],
     'object-shorthand': ['error', 'always', { avoidQuotes: true }],
@@ -107,12 +108,39 @@ module.exports = {
     '@stylistic/comma-dangle': ['error', 'never'],
     '@stylistic/arrow-parens': ['error', 'as-needed'],
     '@stylistic/object-curly-spacing': ['error', 'always'],
-    '@stylistic/indent': ['error', 2, { 'VariableDeclarator': 'first',  'outerIIFEBody': 1, 'MemberExpression': 1, 'ArrayExpression': 1, 'flatTernaryExpressions': true, 'offsetTernaryExpressions': true }],
+    '@stylistic/indent': ['error', 2, { VariableDeclarator: 'first', outerIIFEBody: 1, MemberExpression: 1, ArrayExpression: 1, flatTernaryExpressions: true, offsetTernaryExpressions: true }],
     '@stylistic/max-len': ['error', { code: 120, ignoreTemplateLiterals: true, ignoreStrings: true, ignoreComments: true }],
     '@stylistic/quote-props': ['error', 'consistent'],
     '@stylistic/eol-last': ['error', 'always'],
     '@stylistic/no-trailing-spaces': 'error',
     '@stylistic/jsx-closing-bracket-location': ['error', 'line-aligned'],
-    '@stylistic/jsx-first-prop-new-line': ['error', 'multiline']
+    '@stylistic/jsx-first-prop-new-line': ['error', 'multiline'],
+    '@stylistic/no-multi-spaces': ['error'],
+    '@stylistic/key-spacing': ['error'],
+    '@stylistic/operator-linebreak': ['error', 'after'],
+    '@stylistic/brace-style': ['error', '1tbs', { allowSingleLine: true }],
+    '@stylistic/member-delimiter-style': ['error', {
+      multiline: { delimiter: 'semi', requireLast: true },
+      singleline: { delimiter: 'semi', requireLast: false },
+      multilineDetection: 'brackets'
+    }],
+    '@stylistic/jsx-one-expression-per-line': 'off',
+    '@stylistic/indent-binary-ops': ['error', 4],
+    '@stylistic/jsx-wrap-multilines': ['error', {
+      declaration: 'parens',
+      assignment: 'parens',
+      return: 'parens',
+      arrow: 'parens',
+      condition: 'ignore',
+      logical: 'ignore',
+      prop: 'ignore',
+      propertyValue: 'ignore'
+    }],
+    '@stylistic/quote-props': ['error', 'consistent-as-needed'],
+    '@stylistic/indent-binary-ops': 'off',
+    '@stylistic/comma-dangle': ['error', 'never'],
+    '@stylistic/object-curly-newline': ['error', { multiline: true, consistent: true }],
+    '@stylistic/multiline-ternary': ['error', 'always-multiline', { ignoreJSX: true }],
+    '@stylistic/operator-linebreak': ['error', 'after', { overrides: { '?': 'before', ':': 'before', '|': 'before' } }]
   }
 };

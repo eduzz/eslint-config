@@ -1,15 +1,14 @@
-
 try {
-  const tailwind =  require('eslint-plugin-tailwindcss');
+  const tailwind = require('eslint-plugin-tailwindcss');
 
   /** @type import('eslint').Linter.Config */
   module.exports = {
     name: '@eduzz/eslint-config-react-tailwind',
     plugins: {
-      'tailwindcss': tailwind
+      tailwindcss: tailwind
     },
     rules: {
-      'tailwindcss/classnames-order': ['error', { callees : ['classnames', 'tw', 'clsx', 'ctl', 'cva', 'tv', 'cn', 'cx'] }]
+      'tailwindcss/classnames-order': ['error', { callees: ['classnames', 'tw', 'clsx', 'ctl', 'cva', 'tv', 'cn', 'cx'] }]
     }
   };
 } catch (error) {
