@@ -11,7 +11,7 @@ module.exports = {
     react: { version: 'detect' }
   },
   plugins: {
-    'react': pluginReact,
+    'react': fixupPluginRules(pluginReact),
     'react-hooks': fixupPluginRules(pluginReactHooks),
     'eduzz-rules': eduzzRules
   },
