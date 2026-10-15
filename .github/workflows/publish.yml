@@ -59,6 +59,16 @@ jobs:
         if: steps.skip.outputs.skip != 'true'
         id: current-version
         run: echo "version=$(node -p -e "require('./package.json').version")" >> $GITHUB_OUTPUT
+      - name: Resolve npm dist-tag
+        if: steps.skip.outputs.skip != 'true'
+        id: npm-tag
+        shell: bash
+        run: |
+          case "${GITHUB_REF}" in
+            refs/heads/master) echo "tag=latest" >> "$GITHUB_OUTPUT" ;;
+            refs/heads/release-*|refs/heads/hotfix-*) echo "tag=rc" >> "$GITHUB_OUTPUT" ;;
+            *) echo "Unexpected ref for publish: ${GITHUB_REF}"; exit 1 ;;
+          esac
       - name: Publish
         if: steps.skip.outputs.skip != 'true'
         uses: ./.github/actions/npm-publish
@@ -66,7 +76,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           version: ${{ steps.current-version.outputs.version }}
           path: .
-          tag: ${{ github.ref == 'refs/heads/master' && 'latest' || 'rc' }}
+          tag: ${{ steps.npm-tag.outputs.tag }}
 
   create-tag:
     needs: [publish]

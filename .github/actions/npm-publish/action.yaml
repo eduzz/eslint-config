@@ -15,8 +15,7 @@ inputs:
     default: ''
   tag:
     description: 'npm dist-tag to publish under (e.g. latest, rc)'
-    required: false
-    default: 'latest'
+    required: true
 runs:
   using: "composite"
   steps:
@@ -26,7 +25,7 @@ runs:
         node-version: 24
     - name: Print version
       shell: bash
-      run: echo "New version ${{ inputs.version }}" && npm --version
+      run: echo "Publishing ${{ inputs.version }} with dist-tag ${{ inputs.tag }}" && npm --version
     - name: Publish
       shell: bash
       run: npm publish ${{ inputs.path }} --tag ${{ inputs.tag }} --access public
