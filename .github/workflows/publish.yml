@@ -8,7 +8,7 @@ on:
       - release-*
       - hotfix-*
 
-concurrency: 
+concurrency:
   group: publish-${{ github.ref }}
   cancel-in-progress: true
 
@@ -18,94 +18,55 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Clone
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
       - name: Node
-        uses: actions/setup-node@v3
-      - name: Cache 
-        id: cache-nodemodules
-        uses: actions/cache@v3
+        uses: actions/setup-node@v7
         with:
-          path: node_modules
-          key: packages-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            packages-
+          node-version: 24
+          cache: yarn
       - name: Install
         run: yarn install
       - name: Lint
         run: yarn lint
       - name: Build
         run: yarn build
-      - name: Upload Build Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-artifact
-          path: ./
 
-  should-release:
+  publish:
     needs: [build]
-    name: Should Release
+    if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/heads/hotfix-') || startsWith(github.ref, 'refs/heads/release-')
+    name: Publish
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - name: Clone
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Node
-        uses: actions/setup-node@v3
-      - name: Deps
-        run: npm i -g semver
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
       - name: Run should-release
         shell: bash
         run: scripts/should-release.sh package.json
-      - name: Current Version
-        id: current-version
-        run: echo 'current_version='$(node -p -e "require('./package.json').version") >> $GITHUB_OUTPUT
       - name: Check Skip Release
-        id: skip-release
-        run: echo 'skip='$(cat .skip-release) >> $GITHUB_OUTPUT
-    outputs:
-      skip: ${{ steps.skip-release.outputs.skip }}
-      current_version: ${{ steps.current-version.outputs.current_version }}
-
-  release-candidate:
-    needs: [should-release]
-    if: github.ref != 'refs/heads/master' && (startsWith(github.ref, 'refs/heads/feature-') || startsWith(github.ref, 'refs/heads/hotfix-') || startsWith(github.ref, 'refs/heads/release-'))
-    name: Release Candidate
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Download Build Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: build-artifact
-          path: ./
+        id: skip
+        run: echo "skip=$(cat .skip-release)" >> $GITHUB_OUTPUT
       - name: Update package.json with RC version
-        if: ${{ needs.should-release.outputs.skip != 'true' }}
+        if: steps.skip.outputs.skip != 'true' && github.ref != 'refs/heads/master'
         run: scripts/rc.sh package.json
-      - name: Upload Updated Artifact
-        if: ${{ needs.should-release.outputs.skip != 'true' }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-artifact
-          path: ./
-          overwrite: true
-
-  publish:
-    needs: [should-release, release-candidate]
-    if: |
-      always() && 
-      needs.should-release.result != 'failure' && 
-      (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/heads/hotfix-') || startsWith(github.ref, 'refs/heads/release-'))
-    name: Publish
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - id: npm-publish
-        if: ${{ needs.should-release.outputs.skip != 'true' }}
+      - name: Current Version
+        if: steps.skip.outputs.skip != 'true'
+        id: current-version
+        run: echo "version=$(node -p -e "require('./package.json').version")" >> $GITHUB_OUTPUT
+      - name: Publish
+        if: steps.skip.outputs.skip != 'true'
         uses: ./.github/actions/npm-publish
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          version: ${{ needs.should-release.outputs.current_version }}
-          npm-auth-token: ${{ secrets.NPM_AUTH_TOKEN }}
+          version: ${{ steps.current-version.outputs.version }}
           path: .
+          tag: ${{ github.ref == 'refs/heads/master' && 'latest' || 'rc' }}
 
   create-tag:
     needs: [publish]
@@ -114,12 +75,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Clone
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: Semver
         id: semver
-        uses: luanlmd/semver-composite-action@v1.0.0
+        uses: luanlmd/semver-composite-action@v1.3.0
         with:
           repo-path: ${{ github.workspace }}
       - name: Create tag
@@ -130,14 +91,14 @@ jobs:
           git push --tags
 
   notify:
-    needs: [build, should-release, release-candidate, publish, create-tag]
+    needs: [build, publish, create-tag]
     if: always()
     name: Notify
     runs-on: ubuntu-latest
     steps:
       - name: Discord Message on Success
-        if: ${{ needs.build.result != 'failure' && needs.should-release.result != 'failure' && needs.publish.result != 'failure' && needs.create-tag.result != 'failure'}}
-        uses: vitorvmrs/discord-send-embed@0f0cb61f7ed052734cc11765a5b2c5d0a5c3d9c2
+        if: ${{ needs.build.result != 'failure' && needs.publish.result != 'failure' && needs.create-tag.result != 'failure'}}
+        uses: vitorvmrs/discord-send-embed@v1
         with:
           webhook-url: ${{ secrets.PI_DISCORD_WEBHOOK }}
           title: "${{ github.repository }}/${{ github.ref_name }}"
@@ -146,8 +107,8 @@ jobs:
           color: 65280
           footer-text: "${{ github.sha }} - ${{ github.event.head_commit.message }}"
       - name: Discord Message on Failure
-        if: ${{ needs.build.result == 'failure' || needs.should-release.result == 'failure' || needs.publish.result == 'failure' || needs.create-tag.result == 'failure' }}
-        uses: vitorvmrs/discord-send-embed@0f0cb61f7ed052734cc11765a5b2c5d0a5c3d9c2
+        if: ${{ needs.build.result == 'failure' || needs.publish.result == 'failure' || needs.create-tag.result == 'failure' }}
+        uses: vitorvmrs/discord-send-embed@v1
         with:
           webhook-url: ${{ secrets.PI_DISCORD_WEBHOOK }}
           title: "${{ github.repository }}/${{ github.ref_name }}"
@@ -155,4 +116,3 @@ jobs:
           description: "❌ FAILED / Deu ruim =["
           color: 16711680
           footer-text: "${{ github.sha }} - ${{ github.event.head_commit.message }}"
-  

@@ -9,29 +9,24 @@ inputs:
     description: 'Version to be published'
     required: true
     default: ''
-  npm-auth-token:
-    description: 'NPM auth token'
-    required: true
-    default: ''
   path:
     description: 'Path to the package'
     required: true
     default: ''
+  tag:
+    description: 'npm dist-tag to publish under (e.g. latest, rc)'
+    required: false
+    default: 'latest'
 runs:
   using: "composite"
   steps:
     - name: Node
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v7
+      with:
+        node-version: 24
     - name: Print version
       shell: bash
-      run: echo "New version ${{ inputs.version }}"
-    - name: Download Build Artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: build-artifact
-    - name: Setup NPM Registry
-      shell: bash
-      run: echo '//registry.npmjs.org/:_authToken=${{ inputs.npm-auth-token }}' > ~/.npmrc && npm config get registry && npm whoami
+      run: echo "New version ${{ inputs.version }}" && npm --version
     - name: Publish
       shell: bash
-      run: npm publish ${{ inputs.path }}
+      run: npm publish ${{ inputs.path }} --tag ${{ inputs.tag }} --access public

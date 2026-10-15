@@ -2,6 +2,10 @@ const isIdMalformed = text => {
   return !/^[A-Za-z][\w-:.]*$/.test(text);
 };
 
+const isStaticFragmentMalformed = text => {
+  return !/^[\w-:.]*$/.test(text);
+};
+
 const extractAttributeValue = node => {
   if (!node.value || !node.value.type) {
     return '';
@@ -22,8 +26,44 @@ const extractAttributeValue = node => {
   return '';
 };
 
-const INVALID_ID_MESSAGE =
-  'O id está em um formato inválido, espera-se que o id:\n- deve começar com uma letra\n- pode conter (-, _, :, .)\n- não pode conter espaços ou caracteres especiais';
+const getTemplateLiteralExpression = node => {
+  if (!node.value || node.value.type !== 'JSXExpressionContainer' || node.value.expression.type !== 'TemplateLiteral') {
+    return null;
+  }
+
+  return node.value.expression;
+};
+
+const isDynamicTemplateLiteral = templateLiteral => {
+  return templateLiteral.expressions.length > 0;
+};
+
+const isDynamicTemplateLiteralMalformed = templateLiteral => {
+  const quasis = templateLiteral.quasis.map(({ value }) => (value.cooked != null ? value.cooked : ''));
+
+  if (quasis.some(isStaticFragmentMalformed)) {
+    return true;
+  }
+
+  const startsWithInterpolation = quasis[0] === '';
+
+  if (!startsWithInterpolation && !/^[A-Za-z]/.test(quasis[0])) {
+    return true;
+  }
+
+  return false;
+};
+
+const INVALID_ID_MESSAGE = [
+  'Id inválido. Formato aceito:',
+  '- começa com letra (A-Z ou a-z)',
+  '- depois só letras, dígitos, -, _, : ou .',
+  '- variável: id={name}',
+  '- chamada: id={getId(...)}',
+  '- template: id={`prefix-${name}`} ou id={`${name}-suffix`}',
+  '- partes estáticas do template devem seguir o mesmo formato',
+  '- não aceito: espaços, acentos ou outros caracteres especiais'
+].join('\n');
 const REPEATED_ID_MESSAGE = 'Você já esta utilizando este id em outro elemento =]';
 const NO_EMPTY_ID_MESSAGE = 'O id não pode ser vazio =]';
 
@@ -48,6 +88,7 @@ module.exports = {
           node.value.type === 'JSXExpressionContainer' &&
           (node.value.expression.type === 'Identifier' ||
             node.value.expression.type === 'MemberExpression' ||
+            node.value.expression.type === 'CallExpression' ||
             node.value.expression.type === 'ObjectExpression' ||
             node.value.expression.type === 'ArrayExpression');
 
@@ -90,6 +131,24 @@ module.exports = {
             node,
             message: NO_EMPTY_ID_MESSAGE
           });
+          return;
+        }
+
+        const templateLiteral = getTemplateLiteralExpression(node);
+
+        if (
+          templateLiteral &&
+          isDynamicTemplateLiteral(templateLiteral) &&
+          isDynamicTemplateLiteralMalformed(templateLiteral)
+        ) {
+          context.report({
+            node,
+            message: INVALID_ID_MESSAGE
+          });
+          return;
+        }
+
+        if (templateLiteral && isDynamicTemplateLiteral(templateLiteral)) {
           return;
         }
 
